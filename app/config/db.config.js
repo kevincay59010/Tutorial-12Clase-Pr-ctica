@@ -1,8 +1,11 @@
-module.exports = {
-  DATABASE_URL:
-    process.env.DATABASE_URL ||
-    "postgresql://neondb_owner:npg_8SZyjJ5wmtOD@ep-misty-tooth-ayu4vof6-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=verify-full",
-  dialect: "postgres",
+﻿module.exports = {
+  HOST: process.env.DB_HOST || "localhost",
+  USER: process.env.DB_USER || "postgres",
+  PASSWORD: process.env.DB_PASSWORD || "",
+  DB: process.env.DB_NAME || "nodejs_dev",
+  DB_PORT: process.env.DB_PORT || 5432,
+  dialect: process.env.DB_DIALECT || "postgres",
+  ssl: process.env.DB_SSL === "true",
   pool: {
     max: 5,
     min: 0,

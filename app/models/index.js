@@ -1,29 +1,33 @@
-// Cargamos el archivo de configuración con los datos de conexión a la base de datos
+﻿// Cargamos el archivo de configuración con los datos de conexión a la base de datos
 const dbConfig = require("../config/db.config.js");
 
 // Importamos Sequelize, el ORM que nos permite trabajar con PostgreSQL como objetos JS
 const Sequelize = require("sequelize");
 
-// Creamos una instancia de Sequelize con la DATABASE_URL de Neon
-const sequelize = new Sequelize(dbConfig.DATABASE_URL, {
+// Armamos las opciones de conexión de forma dinámica según el ambiente
+const sequelizeOptions = {
+  host: dbConfig.HOST,
+  port: dbConfig.DB_PORT,
   dialect: dbConfig.dialect,
-
-  // Configuración específica de PostgreSQL, incluyendo conexión segura SSL
-  dialectOptions: {
-    ssl: {
-      require: true,             // La conexión debe usar SSL obligatoriamente
-      rejectUnauthorized: false  // Acepta certificados autofirmados (útil en entornos no productivos)
-    }
-  },
-
-  // Configuración del pool de conexiones para optimizar el rendimiento
   pool: {
     max: dbConfig.pool.max,
     min: dbConfig.pool.min,
     acquire: dbConfig.pool.acquire,
     idle: dbConfig.pool.idle
   }
-});
+};
+
+if (dbConfig.ssl) {
+  sequelizeOptions.dialectOptions = {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  };
+}
+
+// Creamos la instancia de Sequelize con los parámetros de conexión ya armados
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, sequelizeOptions);
 
 // Objeto db que exportaremos para acceder a Sequelize y los modelos desde el resto del proyecto
 const db = {};
@@ -33,6 +37,9 @@ db.sequelize = sequelize;
 
 // Registramos el modelo de cliente en el objeto db
 db.clientes = require("./cliente.model.js")(sequelize, Sequelize);
+
+// Registramos el modelo de tutorial en el objeto db
+db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 
 // Aquí puedes seguir registrando otros modelos de forma similar
 // Ejemplo: db.productos = require("./producto.model.js")(sequelize, Sequelize);

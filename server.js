@@ -1,3 +1,7 @@
+const dotenv = require("dotenv");
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
+dotenv.config({ path: envFile });
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -25,10 +29,11 @@ db.sequelize.sync();
 
 // Ruta simple de prueba
 app.get("/", (req, res) => {
-  res.json({ message: "UMG Web Application" });
+  res.json({ message: "UMG Web Application", ambiente: process.env.NODE_ENV || "development" });
 });
 
 require("./app/routes/cliente.route")(app);
+require("./app/routes/tutorial.route")(app);
 // Si agregas más recursos (ej. tutorial), regístralos igual:
 // require("./app/routes/tutorial.route")(app);
 
