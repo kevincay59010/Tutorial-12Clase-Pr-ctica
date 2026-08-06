@@ -32,6 +32,7 @@ app.get("/", (req, res) => {
   res.json({ message: "UMG Web Application", ambiente: process.env.NODE_ENV || "development" });
 });
 
+require("./app/routes/auth.route")(app);
 require("./app/routes/cliente.route")(app);
 require("./app/routes/tutorial.route")(app);
 // Si agregas más recursos (ej. tutorial), regístralos igual:
