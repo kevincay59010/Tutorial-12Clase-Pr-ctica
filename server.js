@@ -14,6 +14,12 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.post(
+  "/api/pago/webhook",
+  express.raw({ type: "application/json" }),
+  require("./app/controllers/pago.controller.js").webhook
+);
+
 // Parsear requests de tipo application/json
 app.use(bodyParser.json());
 
@@ -35,6 +41,7 @@ app.get("/", (req, res) => {
 require("./app/routes/auth.route")(app);
 require("./app/routes/cliente.route")(app);
 require("./app/routes/tutorial.route")(app);
+require("./app/routes/pago.route")(app);
 // Si agregas más recursos (ej. tutorial), regístralos igual:
 // require("./app/routes/tutorial.route")(app);
 
